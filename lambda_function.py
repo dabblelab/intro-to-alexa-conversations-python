@@ -27,10 +27,10 @@ class RecordColorApiHandler(AbstractRequestHandler):
 
         # First get our request entity and grab the color passed in the API call
         args = util.getApiArguments(handler_input)
-        color = args.color
+        color = args['color']
 
         # Store the favorite color in the session
-        sessionAttributes = handler_input.attributesManager.getSessionAttributes()
+        sessionAttributes = handler_input.attributes_manager.session_attributes
         sessionAttributes['favoriteColor'] = color
 
         response = {
@@ -49,7 +49,7 @@ class IntroToAlexaConversationsButtonEventHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        return handler_input.esponse_builder.add_directive({
+        return handler_input.response_builder.add_directive({
             "type": 'Dialog.DelegateRequest',
             "target": 'AMAZON.Conversations',
             "period": {
@@ -182,12 +182,11 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 
 class LoggingRequestInterceptor(AbstractRequestInterceptor):
     def process(self, handler_input):
-        print("Request received: {}".format(
-            handler_input.request_envelope.request))
+        print("Request received: {}".format(handler_input.request_envelope.request))
 
 
 class LoggingResponseInterceptor(AbstractResponseInterceptor):
-    def process(handler_input, response):
+    def process(self, handler_input, response):
         print("Response generated: {}".format(response))
 
 
@@ -207,7 +206,7 @@ sb.add_request_handler(IntentReflectorHandler())
 sb.add_exception_handler(CatchAllExceptionHandler())
 
 # register interceptors
-sb.add_global_response_interceptor(LoggingRequestInterceptor())
+sb.add_global_request_interceptor(LoggingRequestInterceptor())
 sb.add_global_response_interceptor(LoggingResponseInterceptor())
 
 lambda_handler = sb.lambda_handler()
