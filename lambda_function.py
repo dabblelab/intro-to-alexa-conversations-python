@@ -81,8 +81,11 @@ class GetFavoriteColorApiHandler(AbstractRequestHandler):
         # Get the favorite color from the session
         sessionAttributes = handler_input.attributes_manager.session_attributes
 
-        if sessionAttributes['favoriteColor']:
-            color = sessionAttributes['favoriteColor']
+        try:
+            if sessionAttributes['favoriteColor']:
+                color = sessionAttributes['favoriteColor']
+        except:
+            color = None
 
         response = {
             "apiResponse": {
